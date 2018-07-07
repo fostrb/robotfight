@@ -9,7 +9,7 @@ import math
 
 # TODO: compute proper rotational center (circumcenter for triangle)
 #   add __mul__ operator to Point
-#   
+#   Separate point(vector) polygon and entity classes into Engine module
 
 class Point(object):
     __slots__ = ['x','y']

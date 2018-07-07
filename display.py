@@ -1,6 +1,7 @@
 import pygame
 from robot import Robot
 from entity import Polygon
+
 pygame.init()
 pygame.font.init()
 
