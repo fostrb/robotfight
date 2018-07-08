@@ -8,7 +8,7 @@ class Polygon(object):
             self.points.append(Vector(point))
 
         self.reference_points = self.points
-        self.initialize_offsets
+        self.initialize_offsets()
         self.calc_radius()
 
     def initialize_offsets(self):
@@ -54,3 +54,4 @@ class Polygon(object):
 
 if __name__ == "__main__":
     p = Polygon([[0,0],[0,10], [5,5]])
+    

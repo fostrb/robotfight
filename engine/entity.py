@@ -20,8 +20,8 @@ class Entity(object):
         self.heading %= 360
 
     def update(self):
-        self.translate([1,1])
-        self.rotate(1)
+        #self.translate([1,1])
+        #self.rotate(1)
         self.body.project(heading=self.heading, position=self.position)
 
     def intersects(self, other):

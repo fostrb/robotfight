@@ -24,12 +24,13 @@ class CairoDisplay(object):
         self.window.show_all()
 
         t = threading.Thread(target=self.update_loop)
+        t.daemon = True
         t.start()
         #self.update_loop()
 
     def update_loop(self):
         while True:
-            time.sleep(.1)
+            time.sleep(.03)
             self.bout.update_bots()
             self.window.queue_draw()
 
