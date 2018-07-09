@@ -3,9 +3,9 @@ from engine import Vector
 import math
 import cairo
 
+import time
 
 robody = [[0,0], [0,10], [15,5]]
-
 
 
 class Robot(Entity):
@@ -13,6 +13,9 @@ class Robot(Entity):
         super(Robot, self).__init__(polygon=polygon)
         self.name = name
         self.color = None
+
+        self.hull = 100
+        self.kills = []
 
     def forward(self, val):
         # translate in direction of heading
@@ -28,7 +31,9 @@ class Robot(Entity):
     def execute(self):
         # to be initialized as a thread
         #self.rotate(3)
-        self.forward(1)
+        while True:
+            time.sleep(.03)
+            self.forward(1)
 
     def draw(self, ctx):
         #body

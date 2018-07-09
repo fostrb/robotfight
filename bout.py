@@ -15,12 +15,14 @@ import time
 
 class Bout(object):
     def __init__(self, robs):
-        self.arena = 1366, 750
+        self.arena = 900, 600
+        #self.arena = 100, 100
         self.robs = []
         for rob in robs:
             self.robs.append(Robot(rob))
         self.initialize_bots()
         self.update_bots()
+        self.run_bots()
 
     def initialize_bots(self):
         for rob in self.robs:
@@ -30,13 +32,26 @@ class Bout(object):
             while rob.color is None or sum(rob.color)<1:
                 rob.color = random.random(), random.random(),random.random()
 
+    def run_bots(self):
+        for rob in self.robs:
+            t = threading.Thread(target=rob.execute)
+            t.daemon = True
+            t.start()
+
     def update_bots(self):
         for rob in self.robs:
-            rob.execute()
             rob.update()
             #check out of bounds
             #check collisions
         self.bounds_check()
+        self.rob_collisions()
+
+    def rob_collisions(self):
+        for i in range(len(self.robs)):
+            rob = self.robs[i]
+            for j in range(i+1, len(self.robs)):
+                if self.robs[j].intersects(rob):
+                    print("collision " + rob.name + ', ' + self.robs[j].name)
 
     def bounds_check(self):
         for rob in self.robs:
@@ -49,6 +64,7 @@ class Bout(object):
 
 
     def main_loop(self):
+        self.run_bots()
         while True:
             time.sleep(.1)
             self.update_bots()
@@ -56,7 +72,7 @@ class Bout(object):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    robs = ['rob1', 'rob2']
+    robs = ['rob1', 'rob2', 'rob3']
     b = Bout(robs)
     c = CairoDisplay(bout=b)
     #threading.Thread(target=lambda: None).start()

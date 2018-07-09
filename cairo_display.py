@@ -13,7 +13,7 @@ class CairoDisplay(object):
         self.bout = bout
         self.window = Gtk.Window()
         self.window.set_decorated(False)
-        self.window.resize(*self.bout.arena)
+        self.window.resize(self.bout.arena[0], self.bout.arena[1])
         screen = self.window.get_screen()
         visual = screen.get_rgba_visual()
         if visual and screen.is_composited():
@@ -36,18 +36,25 @@ class CairoDisplay(object):
 
     def update(self, widget, ctx):
         ctx.set_operator(cairo.OPERATOR_CLEAR)
-        ctx.set_source_rgba(0, 0, 0, 0)
         ctx.rectangle(0, 0, *widget.get_size())
         ctx.set_operator(cairo.OPERATOR_OVER)
         ctx.set_source_rgba(0, 0, 0, .8)
         ctx.rectangle(0, 0, *widget.get_size())
         ctx.fill()
         self.draw_entities(ctx)
+        self.draw_boundary(ctx)
 
     def draw_entities(self, ctx):
         #ctx.set_operator(cairo.OPERATOR_OVER)
         for rob in self.bout.robs:
             rob.draw(ctx)
+
+    def draw_boundary(self, ctx):
+        ctx.set_operator(cairo.OPERATOR_OVER)
+        ctx.set_line_width(2)
+        ctx.set_source_rgba(0, 1, 0)
+        ctx.rectangle(0, 0, *self.bout.arena)
+        ctx.stroke()
 
 
 if __name__ == '__main__':
