@@ -7,6 +7,8 @@ import signal
 from cairobot import Robot
 import random
 
+from projectile import Projectile
+
 from engine import Vector
 
 import threading
@@ -18,8 +20,9 @@ class Bout(object):
         self.arena = 900, 600
         #self.arena = 100, 100
         self.robs = []
+        self.projectiles = []
         for rob in robs:
-            self.robs.append(Robot(rob))
+            self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb))
         self.initialize_bots()
         self.update_bots()
         self.run_bots()
@@ -45,6 +48,7 @@ class Bout(object):
             #check collisions
         self.bounds_check()
         self.rob_collisions()
+        self.proj_collisions()
 
     def rob_collisions(self):
         for i in range(len(self.robs)):
@@ -52,6 +56,13 @@ class Bout(object):
             for j in range(i+1, len(self.robs)):
                 if self.robs[j].intersects(rob):
                     print("collision " + rob.name + ', ' + self.robs[j].name)
+
+    def proj_collisions(self):
+        for p in self.projectiles:
+            for rob in self.robs:
+                if rob.intersects(p):
+                    rob.hull -= p.damage
+                    self.projectiles.remove(p)
 
     def bounds_check(self):
         for rob in self.robs:
@@ -62,12 +73,25 @@ class Bout(object):
                 print('oob')
                 self.robs.remove(rob)
 
+        for p in self.projectiles:
+            if p.position[0] <= p.radius or p.position[0] + p.radius >= self.arena[0]:
+                self.projectiles.remove(p)
+            elif p.position[1] <= p.radius or p.position[1] + p.radius >= self.arena[1]:
+                self.projectiles.remove(p)
+
 
     def main_loop(self):
         self.run_bots()
         while True:
             time.sleep(.1)
             self.update_bots()
+
+    def projectile_spawn_cb(self, sourcebot, angle_degrees):
+        p = Projectile(angle_degrees, sourcebot)
+        self.projectiles.append(p)
+        t = threading.Thread(target=p.execute)
+        t.daemon = True
+        t.start()
 
 
 if __name__ == '__main__':

@@ -25,8 +25,12 @@ class Entity(object):
         self.body.project(heading=self.heading, position=self.position)
 
     def intersects(self, other):
-        if self.position.distance(other.position) < self.body.radius + other.body.radius:
-            return True
+        if isinstance(other, Entity):
+            if self.position.distance(other.position) < self.body.radius + other.body.radius:
+                return True
+        else:
+            if self.position.distance(other.position) < self.body.radius + other.radius:
+                return True
         return False
 
 if __name__ == '__main__':

@@ -152,8 +152,12 @@ class Entity(object):
 
     def intersects(self, other):
         if isinstance(other, Entity):
+            print(other)
             if other.position.distance(self.position) <= self.body.radius + other.body.radius:
                 return True
+        if self.position.distance(other.position) <= self.body.radius + other.radius:
+            return True
+        print("fuck")
         return False
 
 

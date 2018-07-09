@@ -4,15 +4,18 @@ import math
 import cairo
 
 import time
+import random
 
 robody = [[0,0], [0,10], [15,5]]
 
 
 class Robot(Entity):
-    def __init__(self, name='', polygon=robody):
+    def __init__(self, name='', polygon=robody, projectile_cb=None):
         super(Robot, self).__init__(polygon=polygon)
         self.name = name
         self.color = None
+
+        self.projectile_cb = projectile_cb
 
         self.hull = 100
         self.kills = []
@@ -31,9 +34,16 @@ class Robot(Entity):
     def execute(self):
         # to be initialized as a thread
         #self.rotate(3)
+        rval = 0
         while True:
             time.sleep(.03)
             self.forward(1)
+            if random.randint(0, 10) == 0:
+                rval = random.randint(-1,1)
+            self.rotate(rval)
+
+            if random.randint(0, 20) == 0:
+                self.fire(random.randint(0, 360))
 
     def draw(self, ctx):
         #body
@@ -63,6 +73,11 @@ class Robot(Entity):
 
         ctx.move_to(self.position[0]-width/2, self.position[1]+self.body.radius + height + 2)
         ctx.show_text(self.name)
+
+    # exposed functions
+    def fire(self, angle_degrees):
+        self.projectile_cb(self, angle_degrees)
+
 
 if __name__ == '__main__':
     Robot()

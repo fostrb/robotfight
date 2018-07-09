@@ -49,6 +49,9 @@ class CairoDisplay(object):
         for rob in self.bout.robs:
             rob.draw(ctx)
 
+        for p in self.bout.projectiles:
+            p.draw(ctx)
+
     def draw_boundary(self, ctx):
         ctx.set_operator(cairo.OPERATOR_OVER)
         ctx.set_line_width(2)
