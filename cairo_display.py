@@ -5,6 +5,7 @@ import cairo
 import signal
 import time
 import threading
+import math
 
 
 
@@ -23,15 +24,16 @@ class CairoDisplay(object):
         self.window.connect('destroy', Gtk.main_quit)
         self.window.show_all()
 
+        self.scanner_events = []
+
         t = threading.Thread(target=self.update_loop)
         t.daemon = True
         t.start()
-        #self.update_loop()
 
     def update_loop(self):
         while True:
             time.sleep(.03)
-            self.bout.update_bots()
+            self.bout.update()
             self.window.queue_draw()
 
     def update(self, widget, ctx):
@@ -45,12 +47,49 @@ class CairoDisplay(object):
         self.draw_boundary(ctx)
 
     def draw_entities(self, ctx):
-        #ctx.set_operator(cairo.OPERATOR_OVER)
         for rob in self.bout.robs:
-            rob.draw(ctx)
+            if rob.alive:
+                rob.draw(ctx)
 
         for p in self.bout.projectiles:
             p.draw(ctx)
+        self.draw_scans(ctx)
+
+    def draw_scans(self, ctx):
+        for scan in self.bout.scanner_events:
+            pos = scan[0]
+            angle = scan[1]
+            arc_width = scan[2]
+            arc_len = scan[3]
+            color = scan[4]
+            t = scan[5]
+
+            a_start = (math.radians(angle-arc_width/2))
+            a_end = (math.radians(math.degrees(a_start)+arc_width))
+
+            t_val = time.time() - t
+            t_val = (1-t_val)*.5
+            if t_val < 1:
+                ctx.new_path()
+                color = [*color] + [t_val]
+                ctx.set_source_rgba(*color)
+                ctx.move_to(pos[0], pos[1])
+                ctx.arc(pos[0], pos[1], arc_len, a_start, a_end)
+                ctx.move_to(pos[0], pos[1])
+                ctx.fill()
+                '''
+            
+
+                ctx.set_source_rgba(0,1,0,t_val)
+                ctx.line_to(pos[0], pos[1])
+                ctx.arc(pos[0], pos[1], arc_len, a_start, a_end)
+                ctx.line_to(pos[0], pos[1])
+                ctx.stroke()
+                ctx.new_path()
+                '''
+            else:
+                self.bout.scanner_events.remove(scan)
+                
 
     def draw_boundary(self, ctx):
         ctx.set_operator(cairo.OPERATOR_OVER)
@@ -58,6 +97,9 @@ class CairoDisplay(object):
         ctx.set_source_rgba(0, 1, 0)
         ctx.rectangle(0, 0, *self.bout.arena)
         ctx.stroke()
+
+    def scanner_draw(self, pos, angle, arc_width, arc_len, color):
+        self.scanner_events.append [pos, angle, arc_width, arc_len, color, time.time()]
 
 
 if __name__ == '__main__':

@@ -12,6 +12,9 @@ class Entity(object):
         self.heading = random.randint(0,360)
         self.position = Vector([0,0])
 
+        self.velocity = (0, 0)
+        self.rotation = 0
+
     def translate(self, vector):
         self.position += vector
 
@@ -20,8 +23,8 @@ class Entity(object):
         self.heading %= 360
 
     def update(self):
-        #self.translate([1,1])
-        #self.rotate(1)
+        self.translate(self.velocity)
+        self.rotate(self.rotation)
         self.body.project(heading=self.heading, position=self.position)
 
     def intersects(self, other):
