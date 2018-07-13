@@ -28,10 +28,7 @@ class Robot(Entity):
 
     def scan(self, angle):
         rvals = self.scanner.scan(angle, self.position, self.color)
-        if len(rvals) > 0:
-            return rvals
-        else:
-            return []
+        return rvals
 
     def forward(self, val):
         vx = math.cos(math.radians(self.heading)) * val
@@ -54,21 +51,21 @@ class Robot(Entity):
                         rval += random.randint(-3,3)
                 if random.randint(0, 50) == 0:
                     rval *= -1
-
                 self.turn(rval)
                 tvals = self.scan(s_angle)
-                s_angle += 1
-                s_angle %=360
-                if len(tvals) > 0:
-                    for t in tvals:
-                        d = None
-                        if d is None:
-                            d = t
-                        elif self.position.distance(t) < self.position.distance(d):
-                            d = t
-                    angle = Vector(d).angle_between(self.position)
-                    self.fire(angle)
-                    s_angle = angle
+                if tvals is not False:
+                    s_angle += 15
+                    s_angle %=360
+                    if len(tvals) > 0:
+                        for t in tvals:
+                            d = None
+                            if d is None:
+                                d = t
+                            elif self.position.distance(t) < self.position.distance(d):
+                                d = t
+                        angle = Vector(d).angle_between(self.position)
+                        self.fire(angle)
+                        s_angle = angle
             else:
                 return
 

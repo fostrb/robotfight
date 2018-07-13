@@ -10,7 +10,7 @@ class Sensor(object):
 
 
 class ArcScanner(Sensor):
-    def __init__(self, source, scanner_cb=None, cooldown=.2):
+    def __init__(self, source, scanner_cb=None, cooldown=.05):
         super(ArcScanner, self).__init__(scanner_cb = scanner_cb, cooldown=1)
         self.source = source
         self.arc_width = 30
@@ -25,5 +25,5 @@ class ArcScanner(Sensor):
             self.last_scan = time.time()
             return rvals
         else:
-            return []
+            return False
 

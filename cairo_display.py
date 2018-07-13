@@ -8,7 +8,6 @@ import threading
 import math
 
 
-
 class CairoDisplay(object):
     def __init__(self, bout=None):
         self.bout = bout
