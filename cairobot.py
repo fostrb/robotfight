@@ -25,6 +25,10 @@ class Robot(Entity):
 
         self.scanner = ArcScanner(self, scanner_cb)
         self.cannon = ATCannon(source=self, projectile_cb=projectile_cb)
+        
+        self.modules = []
+        self.modules.append(self.scanner)
+        self.modules.append(self.cannon)
 
     def scan(self, angle):
         rvals = self.scanner.scan(angle, self.position, self.color)
@@ -54,7 +58,7 @@ class Robot(Entity):
                 self.turn(rval)
                 tvals = self.scan(s_angle)
                 if tvals is not False:
-                    s_angle += 15
+                    s_angle += 5
                     s_angle %=360
                     if len(tvals) > 0:
                         for t in tvals:

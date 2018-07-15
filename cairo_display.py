@@ -31,7 +31,7 @@ class CairoDisplay(object):
 
     def update_loop(self):
         while True:
-            time.sleep(.03)
+            time.sleep(self.bout.sleep_val)
             self.bout.update()
             self.window.queue_draw()
 
@@ -66,9 +66,8 @@ class CairoDisplay(object):
             a_start = (math.radians(angle-arc_width/2))
             a_end = (math.radians(math.degrees(a_start)+arc_width))
 
-            t_val = time.time() - t
-            t_val = (1-t_val)*.5
-            if t_val < 1:
+            t_val = (t/30)*.5
+            if t_val >= 0:
                 ctx.new_path()
                 color = [*color] + [t_val]
                 ctx.set_source_rgba(*color)
@@ -76,8 +75,6 @@ class CairoDisplay(object):
                 ctx.arc(pos[0], pos[1], arc_len, a_start, a_end)
                 ctx.move_to(pos[0], pos[1])
                 ctx.fill()
-                '''
-            
 
                 ctx.set_source_rgba(0,1,0,t_val)
                 ctx.line_to(pos[0], pos[1])
@@ -85,10 +82,6 @@ class CairoDisplay(object):
                 ctx.line_to(pos[0], pos[1])
                 ctx.stroke()
                 ctx.new_path()
-                '''
-            else:
-                self.bout.scanner_events.remove(scan)
-                
 
     def draw_boundary(self, ctx):
         ctx.set_operator(cairo.OPERATOR_OVER)
@@ -96,9 +89,6 @@ class CairoDisplay(object):
         ctx.set_source_rgba(0, 1, 0)
         ctx.rectangle(0, 0, *self.bout.arena)
         ctx.stroke()
-
-    def scanner_draw(self, pos, angle, arc_width, arc_len, color):
-        self.scanner_events.append [pos, angle, arc_width, arc_len, color, time.time()]
 
 
 if __name__ == '__main__':

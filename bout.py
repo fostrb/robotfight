@@ -12,6 +12,8 @@ from engine import Vector
 import threading
 import time
 
+DESIRED_UPDATES_PER_SECOND = 30
+
 
 class Bout(object):
     def __init__(self, robs):
@@ -19,9 +21,10 @@ class Bout(object):
         #self.arena = 400, 400
         self.robs = []
         self.projectiles = []
-        
         self.scanner_events = []
-        
+
+        self.sleep_val = 1/DESIRED_UPDATES_PER_SECOND
+
         for rob in robs:
             self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb, scanner_cb=self.scanner_cb))
         self.initialize_bots()
@@ -45,6 +48,8 @@ class Bout(object):
     def update(self):
         self.update_bots()
         self.update_projectiles()
+        self.modules_update()
+        self.scanners_tick()
 
     def update_projectiles(self):
         for p in self.projectiles:
@@ -96,7 +101,6 @@ class Bout(object):
         rob.alive = False
         print(rob.name+ ':' +reason)
         self.robs.remove(rob)
-        #print(len(self.robs))
 
     def projectile_spawn_cb(self, projectile=None):
         self.projectiles.append(projectile)
@@ -123,12 +127,22 @@ class Bout(object):
         return rvals
 
     def scanner_draw(self, pos, angle, arc_width, arc_len, color):
-        self.scanner_events.append([pos, angle, arc_width, arc_len, color, time.time()])
+        self.scanner_events.append([pos, angle, arc_width, arc_len, color, DESIRED_UPDATES_PER_SECOND])
 
+    def scanners_tick(self):
+        for s in self.scanner_events:
+            s[5] -= 1
+            if s[5] <= 0:
+                self.scanner_events.remove(s)
+
+    def modules_update(self):
+        for rob in self.robs:
+            for m in rob.modules:
+                m.update()
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    robs = ['rob1', 'rob2', 'rob3', 'r3', 'asdf','deded']
+    robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
     #robs = ['rob1', 'rob2']
     b = Bout(robs)
     c = CairoDisplay(bout=b)
