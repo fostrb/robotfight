@@ -28,8 +28,42 @@ class Laser(object):
         self.fade_val -= .05
 
     def intersects(self, other):
-        # line segment with circle intersect
-        return False
+		dx = self.origin[0] - other.position[0]
+		dy = self.origin[1] - other.position[1]
+
+		if math.sqrt(dx**2 + dy**2) <= other.body.radius:
+			# if either end point exists within other's circle...
+			return True
+		dot = (((other.position[0] - self.origin[0]) * (self.end[0] - self.origin[0])) + other.position[1] - self.origin[1] * (self.end[1] - self.origin[1])) / self.length**2
+
+		closest_x = self.origin[0] + (dot * (self.end[0] - self.origin[0]))
+		closest_y = self.origin[1] + (dot * (self.end[1] - self.origin[1]))
+
+		if not self.line_point(self.origin[0], self.origin[1], self.end[0], self.end[1], closest_x, closest_y):
+			return False
+		dx = closest_x - other.position[0]
+		dy = closest_y - other.position[1]
+
+		distance = math.sqrt(dx**2 + dy**2)
+
+		if distance <= other.body.radius*2:
+			return True
+		return False
+
+	def line_point(self, x1, y1, x2, y2, px, py):
+		dx = px - x1
+		dy = py - y1
+		d1 = math.sqrt(dx**2 + dy**2)
+
+		dx = px - x2
+		dy = py - y2
+		d2 = math.sqrt(dx**2 + dy**2)
+
+		buff = 1
+
+		if d1+d2 >= self.length - buff and d1+d2 <= self.length+buff:
+			return True
+
 
     def draw(self, ctx):
         ctx.set_operator(cairo.OPERATOR_ADD)
