@@ -34,6 +34,7 @@ class LaserEmitter(Weapon):
     name = 'LaserEmitter'
     energy = 20
     cooldown = 150
+    modulate_cooldown = 30
     def __init__(self, sourcebot=None, laser_cb=None):
         self.source = sourcebot
         self.laser_cb = laser_cb
@@ -44,7 +45,7 @@ class LaserEmitter(Weapon):
     def modulate(self, index):
         if self.cooldown_timer <= 0:
             self.color = self.colors[index]
-            self.cooldown_timer = self.cooldown
+            self.cooldown_timer = self.modulate_cooldown
 
     def fire(self, angle_degrees):
         if self.cooldown_timer == 0:
