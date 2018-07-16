@@ -52,9 +52,14 @@ class CairoDisplay(object):
 
         for p in self.bout.projectiles:
             p.draw(ctx)
+
         self.draw_scans(ctx)
 
+        for l in self.bout.lasers:
+            l.draw(ctx)
+
     def draw_scans(self, ctx):
+        #ctx.set_operator(cairo.OPERATOR_OVER)
         for scan in self.bout.scanner_events:
             pos = scan[0]
             angle = scan[1]
@@ -66,7 +71,7 @@ class CairoDisplay(object):
             a_start = (math.radians(angle-arc_width/2))
             a_end = (math.radians(math.degrees(a_start)+arc_width))
 
-            t_val = (t/30)*.5
+            t_val = (t/30)*.2
             if t_val >= 0:
                 ctx.new_path()
                 color = [*color] + [t_val]

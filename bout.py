@@ -21,12 +21,13 @@ class Bout(object):
         #self.arena = 400, 400
         self.robs = []
         self.projectiles = []
+        self.lasers = []
         self.scanner_events = []
 
         self.sleep_val = 1/DESIRED_UPDATES_PER_SECOND
 
         for rob in robs:
-            self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb, scanner_cb=self.scanner_cb))
+            self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb, scanner_cb=self.scanner_cb, laser_cb=self.laser_cb))
         self.initialize_bots()
         self.update_bots()
         self.run_bots()
@@ -50,6 +51,13 @@ class Bout(object):
         self.update_projectiles()
         self.modules_update()
         self.scanners_tick()
+        self.update_lasers()
+
+    def update_lasers(self):
+        for l in self.lasers:
+            l.update()
+            if l.fade_val <= 0:
+                self.lasers.remove(l)
 
     def update_projectiles(self):
         for p in self.projectiles:
@@ -64,6 +72,7 @@ class Bout(object):
         self.bounds_check()
         self.rob_collisions()
         self.proj_collisions()
+        self.laser_collisions()
 
     def rob_collisions(self):
         for i in range(len(self.robs)):
@@ -82,6 +91,18 @@ class Bout(object):
                         if rob.hull <= 0 :
                             self.kill_rob(rob, "killed by "+ p.sourcebot.name)
                         self.projectiles.remove(p)
+
+    def laser_collisions(self):
+        for l in self.lasers:
+            for rob in self.robs:
+                if rob is not l.sourcebot:
+                    if l.intersects(rob):
+                        if rob.shield.color == l.color:
+                            rob.hull -= l.damage/5
+                        else:
+                            rob.hull -= l.damage
+                        if rob.hull <=0:
+                            self.kill_rob(rob, "killed by "+ l.sourcebot.name)
 
     def bounds_check(self):
         for rob in self.robs:
@@ -104,6 +125,9 @@ class Bout(object):
 
     def projectile_spawn_cb(self, projectile=None):
         self.projectiles.append(projectile)
+
+    def laser_cb(self, laser=None):
+        self.lasers.append(laser)
 
     def scanner_cb(self, source, angle_degrees, position, arc_degrees, arc_length, color):
         start_angle = (angle_degrees - arc_degrees / 2) % 360
