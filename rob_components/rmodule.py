@@ -5,7 +5,6 @@ class RModule(object):
         self.name = name
         self.energy = energy
         self.cooldown = cooldown
-        #print(self.name, self.cooldown)
 
     def update(self):
         if self.cooldown_timer > 0:

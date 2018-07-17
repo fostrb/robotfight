@@ -98,9 +98,10 @@ class Bout(object):
                 if rob is not l.sourcebot:
                     if l.intersects(rob):
                         if rob.shield.color == l.color:
-                            rob.hull -= l.damage/5
+                            rob.hull -= l.damage
                         else:
                             rob.hull -= l.damage
+
                         if rob.hull <=0:
                             self.kill_rob(rob, "killed by "+ l.sourcebot.name)
 
@@ -166,8 +167,8 @@ class Bout(object):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
-    #robs = ['rob1', 'rob2']
+    #robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
+    robs = ['rob1', 'rob2']
     b = Bout(robs)
     c = CairoDisplay(bout=b)
     #b.scanner_draw = c.scanner_draw
