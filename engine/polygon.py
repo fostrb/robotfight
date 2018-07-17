@@ -1,5 +1,34 @@
 from engine.vector import Vector
 
+# circumcenter locating functions need to be tested---
+def distance(A, B):
+    n = len(A)
+    assert len(B) == n
+    return sum((A[i]-B[i])**2 for i in range(n))**0.5
+
+def cosine(A, B, C):
+    a, b, c = distance(B, C), distance(A, C), distance(A, B)
+    return (a*a+c*c-b*b)/(2*a*c)
+
+def barycentric(A, B, C, p, q, r):
+    n = len(A)
+    assert len(B) == len(C) == n
+    s = p + q + r
+    p, q, r = p/s, q/s, r/s
+    return tuple([p*A[i]+q*B[i]+r*C[i] for i in range(n)])
+
+def trilinear(A, B, C, alpha, beta, gamma):
+    a = distance(B, C)
+    b = distance(A, C)
+    c = distance(A, B)
+    return barycentric(A, B, C, a*alpha, b*beta, c*gamma)
+
+def circumcenter(A, B, C):
+    cosA = cosine(C, A, B)
+    cosB = cosine(A, B, C)
+    cosC = cosine(B, C, A)
+    return trilinear(A, B, C, cosA, cosB, cosC)
+# ^^^circumcenter locating functions need to be tested^^^
 
 class Polygon(object):
     def __init__(self, points=None):
