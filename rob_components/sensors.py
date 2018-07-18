@@ -13,15 +13,14 @@ class ArcScanner(Sensor):
     name = "ArcScanner"
     energy = 10
     cooldown = 5
-    
-    area = 100
-    
+    area = 10000
+
     def __init__(self, source, scanner_cb=None):
         super(ArcScanner, self).__init__(name=self.name, energy=self.energy, scanner_cb = scanner_cb, cooldown=self.cooldown)
         self.source = source
         self.arc_width = 30
-        self.arc_length = 200
-        self.last_scan = 0
+        self.arc_length = None
+        #self.last_scan = 0
         self.cooldown_timer = 0
 
     def scan(self, angle_degrees, position, color):
@@ -32,13 +31,15 @@ class ArcScanner(Sensor):
             return rvals
         else:
             return False
-    
+
     def calc_size(self):
         if self.arc_width is not None:
             self.arc_length = math.sqrt(self.area/(math.pi*self.arc_width/360))
         elif self.arc_length is not None:
             self.arc_width = self.area/ (math.pi * self.arc_length**2) * 360
-    
+
+        #print((math.pi * self.arc_length**2) * self.arc_width/360)
+
     def set_length(self, length):
         self.arc_length = length
         self.arc_width = None

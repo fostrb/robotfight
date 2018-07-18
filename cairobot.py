@@ -50,6 +50,7 @@ class Robot(Entity):
         # to be initialized as a thread
         rval = random.randint(-3, 3)
         s_angle = random.randint(0, 360)
+        self.scanner.set_arc_width(30)
         while True:
             if self.alive:
                 time.sleep(.05)
