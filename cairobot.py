@@ -15,6 +15,7 @@ class Robot(Entity):
         super(Robot, self).__init__(polygon=polygon)
         self.name = name
         self.color = None
+        self.position = Vector(0, 0)
         self.velocity = Vector(0, 0)
 
         #self.projectile_cb = projectile_cb

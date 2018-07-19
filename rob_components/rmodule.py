@@ -5,7 +5,6 @@ class RMInterface(object):
             setattr(self, m.__name__, m)
 
 
-
 class RModule(object):
     def __init__(self, name='', energy=0, cooldown=0):
         self.name = name

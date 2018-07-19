@@ -7,16 +7,20 @@ import signal
 from cairobot import Robot
 import random
 
+
 from engine import Vector
 
 import threading
 import time
 
+from rbtest import *
+
+
 DESIRED_UPDATES_PER_SECOND = 30
 
 
 class Bout(object):
-    def __init__(self, robs):
+    def __init__(self, robs=[]):
         self.arena = 900, 600
         #self.arena = 400, 400
         self.robs = []
@@ -28,8 +32,15 @@ class Bout(object):
 
         for rob in robs:
             self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb, scanner_cb=self.scanner_cb, laser_cb=self.laser_cb))
+        m = MasterMind()
+        r = m.build_robot(self)
+        self.robs.append(r)
+
         self.initialize_bots()
         self.update_bots()
+        self.run_bots()
+
+    def start(self):
         self.run_bots()
 
     def initialize_bots(self):

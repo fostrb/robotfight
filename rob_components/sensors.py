@@ -15,7 +15,7 @@ class ArcScanner(Sensor):
     cooldown = 5
     area = 10000
 
-    def __init__(self, source, scanner_cb=None):
+    def __init__(self, source=None, scanner_cb=None):
         super(ArcScanner, self).__init__(name=self.name, energy=self.energy, scanner_cb = scanner_cb, cooldown=self.cooldown)
         self.source = source
         self.arc_width = 30
@@ -23,9 +23,12 @@ class ArcScanner(Sensor):
         #self.last_scan = 0
         self.cooldown_timer = 0
         self.exposed = [self.scan, self.set_length, self.set_arc_width, self.get_length, self.get_arc_width]
+        self.calc_size()
 
-    def scan(self, angle_degrees, position, color):
+    def scan(self, angle_degrees, position=None, color=None):
         if self.cooldown_timer <= 0:
+            position = self.source.position
+            color = self.source.color
             rvals = []
             rvals = self.scanner_cb(self.source, angle_degrees, position, self.arc_width, self.arc_length, color)
             self.cooldown_timer = self.cooldown

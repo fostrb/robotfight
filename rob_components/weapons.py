@@ -16,7 +16,7 @@ class ATCannon(Weapon):
     name = 'ATCannon'
     energy = 10
     cooldown = 15
-    def __init__(self, source, projectile_cb=None):
+    def __init__(self, source=None, projectile_cb=None):
         super(ATCannon, self).__init__(name=self.name, energy=self.energy, cooldown=self.cooldown)
         self.source = source
         self.projectile_cb = projectile_cb
