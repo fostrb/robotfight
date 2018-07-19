@@ -54,6 +54,19 @@ class Polygon(object):
             point.x -= xavg
             point.y -= yavg
         self.points = self.reference_points
+        '''
+        pts = []
+        for p in self.reference_points:
+            pts.append([p[0],p[1]])
+
+        ccenter = circumcenter(*pts)
+        for point in self.reference_points:
+            #point[0] -= ccenter[0]
+            #point[1] -= ccenter[1]
+            point -= ccenter
+
+        self.points = self.reference_points
+        '''
 
     def calc_radius(self):
         d = None
@@ -83,4 +96,4 @@ class Polygon(object):
 
 if __name__ == "__main__":
     p = Polygon([[0,0],[0,10], [5,5]])
-    
+

@@ -11,6 +11,9 @@ class Vector(object):
             self.x = x_or_pair
             self.y = y
 
+    def __len__(self):
+        return 2
+
     def __repr__(self):
         return("["+str(self.x) + ', ' + str(self.y)+"]")
 

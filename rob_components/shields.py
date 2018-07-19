@@ -16,9 +16,13 @@ class EnergyShield(Shield):
         self.colors = [[1,0,0], [0,1,0], [0,0,1]]
         self.color = choice(self.colors)
         self.cooldown_timer = 0
+        self.exposed = [self.modulate, self.get_color]
 
     def modulate(self, index):
         if self.cooldown_timer <= 0:
             self.color = self.colors[index]
             self.cooldown_timer = self.cooldown
+
+    def get_color(self):
+        return self.color
 

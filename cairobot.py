@@ -16,7 +16,8 @@ class Robot(Entity):
         self.name = name
         self.color = None
         self.velocity = Vector(0, 0)
-        self.projectile_cb = projectile_cb
+
+        #self.projectile_cb = projectile_cb
 
         self.alive = True
 
@@ -27,6 +28,8 @@ class Robot(Entity):
         self.cannon = ATCannon(source=self, projectile_cb=projectile_cb)
         self.shield = EnergyShield()
         self.laser = LaserEmitter(sourcebot=self, laser_cb=laser_cb)
+
+        self.cannon_iface = self.cannon.gen_interface()
 
         self.modules = []
         self.modules.append(self.scanner)
@@ -53,9 +56,9 @@ class Robot(Entity):
         self.scanner.set_arc_width(30)
         while True:
             if self.alive:
-                time.sleep(.05)
-                self.forward(.5)
-                if random.randint(0, 3) == 0:
+                time.sleep(.03)
+                self.forward(1)
+                if random.randint(0, 4) == 0:
                     while rval >= 3 and rval <= -3:
                         rval += random.randint(-3,3)
                 if random.randint(0, 50) == 0:
@@ -73,7 +76,8 @@ class Robot(Entity):
                             elif self.position.distance(t) < self.position.distance(d):
                                 d = t
                         angle = Vector(d).angle_between(self.position)
-                        self.fire(angle)
+                        #self.fire(angle)
+                        self.cannon_iface.fire(angle)
                         self.laser.fire(angle)
                         s_angle = angle
                 self.shield.modulate(random.randint(0,2))
@@ -134,9 +138,6 @@ class Robot(Entity):
         (x, y, width, height, dx, dy) = ctx.text_extents(hull_str)
         ctx.move_to(self.position[0] - width/2, self.position[1]- self.body.radius - height + 2)
         ctx.show_text(hull_str)
-    # exposed functions
-    def fire(self, angle_degrees):
-        self.cannon.fire(angle_degrees)
 
 
 if __name__ == '__main__':

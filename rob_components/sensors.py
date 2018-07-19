@@ -22,6 +22,7 @@ class ArcScanner(Sensor):
         self.arc_length = None
         #self.last_scan = 0
         self.cooldown_timer = 0
+        self.exposed = [self.scan, self.set_length, self.set_arc_width, self.get_length, self.get_arc_width]
 
     def scan(self, angle_degrees, position, color):
         if self.cooldown_timer <= 0:
@@ -49,4 +50,10 @@ class ArcScanner(Sensor):
         self.arc_width = angle
         self.arc_length = None
         self.calc_size()
+
+    def get_length(self):
+        return self.arc_length
+
+    def get_arc_width(self):
+        return self.arc_width
 

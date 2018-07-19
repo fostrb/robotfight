@@ -22,6 +22,8 @@ class ATCannon(Weapon):
         self.projectile_cb = projectile_cb
         self.cooldown_timer = 0
 
+        self.exposed = [self.fire]
+
     def fire(self, angle_degrees):
         if self.cooldown_timer <= 0:
             p = Projectile(angle_degrees, self.source)
@@ -42,6 +44,8 @@ class LaserEmitter(Weapon):
         self.color = choice(self.colors)
         self.cooldown_timer = 0
 
+        self.exposed = [self.modulate, self.fire, self.get_color]
+
     def modulate(self, index):
         if self.cooldown_timer <= 0:
             self.color = self.colors[index]
@@ -52,5 +56,8 @@ class LaserEmitter(Weapon):
             l = Laser(heading=angle_degrees, sourcebot=self.source, color=self.color)
             self.laser_cb(l)
             self.cooldown_timer = self.cooldown
+
+    def get_color(self):
+        return self.color
 
 

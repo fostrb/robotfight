@@ -24,7 +24,7 @@ class Bout(object):
         self.lasers = []
         self.scanner_events = []
 
-        self.sleep_val = 1/DESIRED_UPDATES_PER_SECOND
+        self.sleep_val = 1 / DESIRED_UPDATES_PER_SECOND
 
         for rob in robs:
             self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb, scanner_cb=self.scanner_cb, laser_cb=self.laser_cb))
@@ -35,10 +35,20 @@ class Bout(object):
     def initialize_bots(self):
         for rob in self.robs:
             r = int(rob.body.radius)
-            rob.position = Vector(random.randint(r, self.arena[0]-r), random.randint(r, self.arena[1]-r))
+            while self.bot_overlap(rob):
+                rob.position = Vector(random.randint(r+100, self.arena[0]-r-100), random.randint(r+100, self.arena[1]-r-100))
             rob.heading = random.randint(0, 360)
-            while rob.color is None or sum(rob.color)<1:
+            while rob.color is None or sum(rob.color) < 1:
                 rob.color = random.random(), random.random(),random.random()
+
+    def bot_overlap(self, rob):
+        r = int(rob.body.radius)
+        rob.position = Vector(random.randint(r+100, self.arena[0]-r-100), random.randint(r+100, self.arena[1]-r-100))
+        for b in self.robs:
+            if b is not rob:
+                if b.intersects(rob):
+                    return True
+        return False
 
     def run_bots(self):
         for rob in self.robs:
@@ -89,7 +99,7 @@ class Bout(object):
                     if rob.intersects(p):
                         rob.hull -= p.damage
                         if rob.hull <= 0 :
-                            self.kill_rob(rob, "killed by "+ p.sourcebot.name)
+                            self.kill_rob(rob, p.sourcebot.name + " killed")
                         self.projectiles.remove(p)
 
     def laser_collisions(self):
@@ -101,9 +111,8 @@ class Bout(object):
                             rob.hull -= l.damage
                         else:
                             rob.hull -= l.damage
-
                         if rob.hull <=0:
-                            self.kill_rob(rob, "killed by "+ l.sourcebot.name)
+                            self.kill_rob(rob, l.sourcebot.name + " killed")
 
     def bounds_check(self):
         for rob in self.robs:
@@ -121,7 +130,8 @@ class Bout(object):
 
     def kill_rob(self, rob, reason):
         rob.alive = False
-        print(rob.name+ ':' +reason)
+        print(reason + ' ' + rob.name)
+        #print(rob.name+ ':' +reason)
         self.robs.remove(rob)
 
     def projectile_spawn_cb(self, projectile=None):
@@ -167,14 +177,10 @@ class Bout(object):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    #robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
-    robs = ['rob1', 'rob2']
+    robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
+    #robs = ['rob1', 'rob2']
     b = Bout(robs)
     c = CairoDisplay(bout=b)
-    #b.scanner_draw = c.scanner_draw
-    #threading.Thread(target=lambda: None).start()
-    #GObject.threads_init()
-    #Gdk.threads.enter()
     Gtk.main()
     exit()
 
