@@ -6,3 +6,4 @@ from rob_components.weapons import ATCannon
 from rob_components.shields import Shield
 from rob_components.shields import EnergyShield
 from rob_components.rmodule import RMInterface
+from rob_components.mobility import Treads

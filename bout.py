@@ -4,16 +4,19 @@ from gi.repository import Gtk, GObject, Gdk
 from cairo_display import CairoDisplay
 import signal
 
-from cairobot import Robot
-import random
 
+from nbot import Robot
+import random
 
 from engine import Vector
 
 import threading
 import time
 
-from rbtest import *
+#from rbtest import 
+from ROBOTS.mastermind import MasterMind
+from ROBOTS.telepath import Telepath
+from ROBOTS.mosquito import Mosquito
 
 
 DESIRED_UPDATES_PER_SECOND = 30
@@ -31,10 +34,9 @@ class Bout(object):
         self.sleep_val = 1 / DESIRED_UPDATES_PER_SECOND
 
         for rob in robs:
-            self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb, scanner_cb=self.scanner_cb, laser_cb=self.laser_cb))
-        m = MasterMind()
-        r = m.build_robot(self)
-        self.robs.append(r)
+            #self.robs.append(Robot(rob, projectile_cb=self.projectile_spawn_cb, scanner_cb=self.scanner_cb, laser_cb=self.laser_cb))
+            r = rob().build_robot(self)
+            self.robs.append(r)
 
         self.initialize_bots()
         self.update_bots()
@@ -118,10 +120,7 @@ class Bout(object):
             for rob in self.robs:
                 if rob is not l.sourcebot:
                     if l.intersects(rob):
-                        if rob.shield.color == l.color:
-                            rob.hull -= l.damage
-                        else:
-                            rob.hull -= l.damage
+                        rob.hull -= l.damage
                         if rob.hull <=0:
                             self.kill_rob(rob, l.sourcebot.name + " killed")
 
@@ -188,8 +187,9 @@ class Bout(object):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
+    #robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
     #robs = ['rob1', 'rob2']
+    robs = [MasterMind, Telepath, Mosquito]
     b = Bout(robs)
     c = CairoDisplay(bout=b)
     Gtk.main()

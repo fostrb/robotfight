@@ -22,6 +22,8 @@ class CairoDisplay(object):
         self.window.connect('draw', self.update)
         self.window.connect('destroy', Gtk.main_quit)
         self.window.show_all()
+        
+        self.lock = threading.Lock()
 
         self.scanner_events = []
 
@@ -32,6 +34,7 @@ class CairoDisplay(object):
     def update_loop(self):
         while True:
             time.sleep(self.bout.sleep_val)
+            #with self.lock:
             self.bout.update()
             self.window.queue_draw()
 

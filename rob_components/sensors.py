@@ -4,8 +4,8 @@ from rob_components.rmodule import RModule
 
 
 class Sensor(RModule):
-    def __init__(self, name='', energy=0, scanner_cb=None, cooldown=None):
-        super(Sensor, self).__init__(name=name, energy=energy, cooldown=cooldown)
+    def __init__(self, name='', energy=0, scanner_cb=None):
+        super(Sensor, self).__init__(name=name, energy=energy)
         self.scanner_cb = scanner_cb
 
 
@@ -16,14 +16,17 @@ class ArcScanner(Sensor):
     area = 10000
 
     def __init__(self, source=None, scanner_cb=None):
-        super(ArcScanner, self).__init__(name=self.name, energy=self.energy, scanner_cb = scanner_cb, cooldown=self.cooldown)
+        super(ArcScanner, self).__init__(name=self.name, energy=self.energy, scanner_cb = scanner_cb)
         self.source = source
         self.arc_width = 30
         self.arc_length = None
-        #self.last_scan = 0
         self.cooldown_timer = 0
         self.exposed = [self.scan, self.set_length, self.set_arc_width, self.get_length, self.get_arc_width]
         self.calc_size()
+
+    def update(self):
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
 
     def scan(self, angle_degrees, position=None, color=None):
         if self.cooldown_timer <= 0:

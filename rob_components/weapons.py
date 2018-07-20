@@ -8,7 +8,7 @@ from laser import Laser
 
 class Weapon(RModule):
     def __init__(self, name='', energy=0, cooldown=None):
-        super(Weapon, self).__init__(name=name, energy=energy, cooldown=cooldown)
+        super(Weapon, self).__init__(name=name, energy=energy)
         self.cooldown = cooldown
 
 
@@ -29,6 +29,10 @@ class ATCannon(Weapon):
             p = Projectile(angle_degrees, self.source)
             self.projectile_cb(p)
             self.cooldown_timer = self.cooldown
+
+    def update(self):
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
 
 
 # separate cooldowns for fire and modulate
@@ -59,5 +63,9 @@ class LaserEmitter(Weapon):
 
     def get_color(self):
         return self.color
+
+    def update(self):
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
 
 
