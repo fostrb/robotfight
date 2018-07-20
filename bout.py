@@ -3,7 +3,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Gdk
 from cairo_display import CairoDisplay
 import signal
-
+import sys
 
 from nbot import Robot
 import random
@@ -87,6 +87,9 @@ class Bout(object):
             p.update()
 
     def update_bots(self):
+        if len(self.robs) <= 1:
+            print(self.robs[0].name + " VICTORY")
+            sys.exit()
         for rob in self.robs:
             if rob.alive:
                 rob.update()
@@ -187,9 +190,7 @@ class Bout(object):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    #robs = ['rob1', 'rob2', 'rob3', 'rob4', 'rob5','rob6']
-    #robs = ['rob1', 'rob2']
-    robs = [MasterMind, Telepath, Mosquito]
+    robs = [MasterMind, Telepath, Mosquito, MasterMind]
     b = Bout(robs)
     c = CairoDisplay(bout=b)
     Gtk.main()

@@ -22,12 +22,23 @@ class MasterMind(RobController):
             tvals = self.scanner.scan(scan_angle)
             if tvals is not False:
                 if len(tvals) > 0:
-                    for target in tvals:
-                        #print(target)
-                        pass
-                    self.laser.fire(scan_angle)
-                    #self.cannon1.fire(scan_angle)
+                    t = self.closest_target(tvals)
+                    target_angle = t.angle_between(self.get_position())
+                    self.laser.fire(target_angle)
+                    self.cannon1.fire(target_angle)
+                    scan_angle = target_angle
+                    self.scanner.set_length(self.get_position().distance(t)+50)
                 else:
+                    self.scanner.set_arc_width(30)
                     scan_angle += 30
-                self.cannon2.fire(90)
+                #self.cannon2.fire(90)
             time.sleep(0.01)
+
+    def closest_target(self, tvals):
+        closest = None
+        for target in tvals:
+            if closest is None:
+                closest = target
+            if target.distance(self.get_position()) < self.get_position().distance(closest):
+                closest = target
+        return closest

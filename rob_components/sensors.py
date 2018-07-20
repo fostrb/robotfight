@@ -12,7 +12,7 @@ class Sensor(RModule):
 class ArcScanner(Sensor):
     name = "ArcScanner"
     energy = 10
-    cooldown = 5
+    cooldown = 4
     area = 10000
 
     def __init__(self, source=None, scanner_cb=None):
