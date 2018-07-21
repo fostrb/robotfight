@@ -14,6 +14,7 @@ class CairoDisplay(object):
         self.window = Gtk.Window()
         self.window.set_decorated(False)
         self.window.resize(self.bout.arena[0], self.bout.arena[1])
+        self.window.fullscreen()
         screen = self.window.get_screen()
         visual = screen.get_rgba_visual()
         if visual and screen.is_composited():
@@ -22,7 +23,7 @@ class CairoDisplay(object):
         self.window.connect('draw', self.update)
         self.window.connect('destroy', Gtk.main_quit)
         self.window.show_all()
-        
+
         self.lock = threading.Lock()
 
         self.scanner_events = []

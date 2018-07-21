@@ -24,7 +24,8 @@ DESIRED_UPDATES_PER_SECOND = 30
 
 class Bout(object):
     def __init__(self, robs=[]):
-        self.arena = 900, 600
+        #self.arena = 900, 600
+        self.arena = 1300, 720
         #self.arena = 400, 400
         self.robs = []
         self.projectiles = []
@@ -194,7 +195,7 @@ class Bout(object):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    robs = [MasterMind, Telepath, Mosquito, MasterMind]
+    robs = [MasterMind, Telepath, Mosquito, MasterMind, Telepath, Mosquito]
     b = Bout(robs)
     c = CairoDisplay(bout=b)
     Gtk.main()
