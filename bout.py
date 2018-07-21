@@ -42,9 +42,6 @@ class Bout(object):
         self.update_bots()
         self.run_bots()
 
-    def start(self):
-        self.run_bots()
-
     def initialize_bots(self):
         for rob in self.robs:
             r = int(rob.body.radius)
@@ -84,7 +81,11 @@ class Bout(object):
 
     def update_projectiles(self):
         for p in self.projectiles:
-            p.update()
+            if p.detonated:
+                self.projectiles.remove(p)
+            else:
+                p.update()
+
 
     def update_bots(self):
         if len(self.robs) <= 1:
@@ -110,13 +111,15 @@ class Bout(object):
 
     def proj_collisions(self):
         for p in self.projectiles:
-            for rob in self.robs:
-                if rob is not p.sourcebot:
-                    if rob.intersects(p):
-                        rob.hull -= p.damage
-                        if rob.hull <= 0 :
-                            self.kill_rob(rob, p.sourcebot.name + " killed")
-                        self.projectiles.remove(p)
+            if not p.detonated:
+                for rob in self.robs:
+                    if rob is not p.sourcebot:
+                        if rob.intersects(p):
+                            p.detonated = True
+                            rob.hull -= p.damage
+                            if rob.hull <= 0 :
+                                self.kill_rob(rob, p.sourcebot.name + " killed")
+                            #self.projectiles.remove(p)
 
     def laser_collisions(self):
         for l in self.lasers:
@@ -137,9 +140,11 @@ class Bout(object):
 
         for p in self.projectiles:
             if p.position[0] <= p.radius or p.position[0] + p.radius >= self.arena[0]:
-                self.projectiles.remove(p)
+                #self.projectiles.remove(p)
+                p.detonated = True
             elif p.position[1] <= p.radius or p.position[1] + p.radius >= self.arena[1]:
-                self.projectiles.remove(p)
+                #self.projectiles.remove(p)
+                p.detonated = True
 
     def kill_rob(self, rob, reason):
         rob.alive = False
@@ -164,7 +169,6 @@ class Bout(object):
                     angle = rob.position.angle_between(p) % 360
                     if start_angle + arc_degrees > 360:
                         if angle > start_angle or angle < end_angle:
-                            
                             rvals.append(rob.position)
                     else:
                         if start_angle < angle < end_angle:

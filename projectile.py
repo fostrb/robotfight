@@ -9,12 +9,14 @@ class Projectile(object):
         self.heading = heading % 360
         self.sourcebot = sourcebot
 
-        self.radius = 2
         self.position = [self.sourcebot.position[0], self.sourcebot.position[1]]
+        self.detonated = False
 
+        self.radius = 2
         self.speed = 10
         self.velocity = self.calc_velocity()
         self.damage = 10
+
         self.init_position()
 
     def init_position(self):
