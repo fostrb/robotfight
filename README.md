@@ -1,5 +1,5 @@
 # robotfight
-![Alt Text](https://github.com/fostrb/robotfight/blob/master/docs/robotfight.gif?raw=true)
+![dummy_bots](https://github.com/fostrb/robotfight/blob/master/docs/robotfight.gif?raw=true)
 
 -Build robot.
 
