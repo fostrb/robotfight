@@ -94,7 +94,8 @@ class Bout(object):
     def update_bots(self):
         if len(self.robs) <= 1:
             print(self.robs[0].name + " VICTORY")
-            sys.exit()
+            Gtk.main_quit()
+            exit()
         for rob in self.robs:
             if rob.alive:
                 rob.update()
