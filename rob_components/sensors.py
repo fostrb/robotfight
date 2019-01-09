@@ -9,6 +9,35 @@ class Sensor(RModule):
         self.scanner_cb = scanner_cb
 
 
+class PulseScanner(Sensor):
+    name = "PulseScanner"
+    energy = 10
+    cooldown = 50
+    radius = 5000
+
+    def __init__(self, source=None, scanner_cb=None):
+        super(PulseScanner, self).__init__(name=self.name, energy=self.energy, scanner_cb = scanner_cb)
+        self.source = source
+        self.cooldown_timer = 0
+        self.exposed = [self.scan]
+
+    def update(self):
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
+
+    def scan(self, position=None, color=None):
+        if self.cooldown_timer <= 0:
+            position = self.source.position
+            color = self.source.color
+            rvals = []
+            rvals = self.scanner_cb(self.source, 90, position, 360, self.radius, color)
+            self.cooldown_timer = self.cooldown
+            return rvals
+        else:
+            return False
+
+
+
 class ArcScanner(Sensor):
     name = "ArcScanner"
     energy = 10
